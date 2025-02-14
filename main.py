@@ -241,7 +241,7 @@ async def create_teams(ctx):
                 except Exception:
                     embed = discord.Embed()
                     embed.title = 'Teams creation'
-                    embed.description = 'Teammate with username \'{teammate name}\' is not in the server! Please add them manually.'
+                    embed.description = f'Teammate with username \'{teammate}\' is not in the server! Please add them manually.'
                     await gt_alert_channel.send(embed=embed)
 
     embed = discord.Embed()
