@@ -226,8 +226,8 @@ async def create_teams(ctx):
             }
 
             team_cat = await guild.create_category(name=f'{config['competition']['name']} {team_name}', overwrites=team_overwrites)
-            await team_cat.create_text_channel(name='competitor-chat', overwrites=team_overwrites)
-            await team_cat.create_voice_channel(name='competitor-voice', overwrites=team_overwrites)
+            await team_cat.create_text_channel(name=f'{team_name}-chat', overwrites=team_overwrites)
+            await team_cat.create_voice_channel(name=f'{team_name}-voice', overwrites=team_overwrites)
 
             for teammate in row:
                 try:
@@ -265,6 +265,7 @@ async def delete_teams(ctx):
             await role.delete()
 
     for category in guild.categories:
+        print(category.name, competitor_cat_re.match(category.name))
         if competitor_cat_re.match(category.name):
             for channel in category.channels:
                 await channel.delete()
