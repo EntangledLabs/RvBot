@@ -25,6 +25,7 @@ gt_allowed = [config['roles']['gt_role'], config['roles']['dir_role']]
 admin_allowed = ['Admin', config['roles']['dir_role']]
 
 competitor_role_re = re.compile(r'^Team\s[a-zA-Z0-9]+$')
+competitor_cat_re = re.compile(fr'^{config['competition']['name']}\s[a-zA-Z0-9\s]+$')
 
 bot = commands.Bot(
     command_prefix='!rvbot ',
@@ -257,15 +258,11 @@ async def delete_teams(ctx):
 
     guild = discord.utils.get(bot.guilds, id=guild_id)
 
-    competitor_role_re = re.compile(r'^Team\s[a-zA-Z0-9]+$')
-    competitor_cat_re = re.compile(fr'^{config['competition']['name']}\s[a-zA-Z0-9\s]+$')
-
     for role in guild.roles:
-        if competitor_role_re.match(role.name) is not None:
+        if competitor_role_re.match(role.name):
             await role.delete()
 
     for category in guild.categories:
-        print(category.name, competitor_cat_re.match(category.name))
         if competitor_cat_re.match(category.name):
             for channel in category.channels:
                 await channel.delete()
@@ -299,6 +296,22 @@ async def send_creds(ctx):
             embed.description = f'Your credentials are: {row.pop(0)}:{row.pop(0)}'
             team_general.send(embed=embed)
 
+@bot.command(pass_context=True)
+@commands.check_any(commands.has_any_role(*[*gt_allowed, *admin_allowed]),
+                    commands.has_guild_permissions(administrator=True))
+async def send_message(ctx, title, message):
+    """Sends a message to the teams"""
+
+    guild = discord.utils.get(bot.guilds, id=guild_id)
+
+    embed = discord.Embed()
+    embed.title = title
+    embed.description = message
+
+    for category in guild.categories:
+        if competitor_cat_re.match(category.name):
+            channel = category.text_channels[0]
+            await channel.send(embed=embed, file=ctx.message.attachments[0].to_file())
 
 # ++++==== GT Support ====++++
 @bot.command(pass_context=True)

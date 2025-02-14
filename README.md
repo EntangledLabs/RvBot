@@ -6,6 +6,9 @@ An RvB bot with utilities to make RvB's easier to run.
 
 Changelog:
 
+v1.1.0
+Added send_message command
+
 v1.0.3
 Added space detection in team name regex
 
