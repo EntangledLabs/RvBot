@@ -215,6 +215,7 @@ async def create_teams(ctx):
     with TextIOWrapper(BytesIO(await ctx.message.attachments[0].read())) as f:
         csvreader = csv.reader(f)
 
+        index = 1
         for row in csvreader:
             team_name = row.pop(0)
 
@@ -226,7 +227,7 @@ async def create_teams(ctx):
                 discord.utils.get(guild.roles, name=config['roles']['gt_role']): discord.PermissionOverwrite(read_messages=True)
             }
 
-            team_cat = await guild.create_category(name=f'{config['competition']['name']} {team_name}', overwrites=team_overwrites)
+            team_cat = await guild.create_category(name=f'{config['competition']['name']} {index} - {team_name}', overwrites=team_overwrites)
             await team_cat.create_text_channel(name=f'{team_name}-chat', overwrites=team_overwrites)
             await team_cat.create_voice_channel(name=f'{team_name}-voice', overwrites=team_overwrites)
 
@@ -244,6 +245,8 @@ async def create_teams(ctx):
                     embed.title = 'Teams creation'
                     embed.description = f'Teammate with username \'{teammate}\' is not in the server! Please add them manually.'
                     await gt_alert_channel.send(embed=embed)
+
+            index = index + 1
 
     embed = discord.Embed()
     embed.title = 'Teams creation'
