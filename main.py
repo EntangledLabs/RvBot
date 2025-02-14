@@ -258,7 +258,7 @@ async def delete_teams(ctx):
     guild = discord.utils.get(bot.guilds, id=guild_id)
 
     competitor_role_re = re.compile(r'^Team\s[a-zA-Z0-9]+$')
-    competitor_cat_re = re.compile(fr'^{config['competition']['name']}\s[a-zA-Z0-9]+$')
+    competitor_cat_re = re.compile(fr'^{config['competition']['name']}\s[a-zA-Z0-9\s]+$')
 
     for role in guild.roles:
         if competitor_role_re.match(role.name) is not None:

@@ -6,6 +6,9 @@ An RvB bot with utilities to make RvB's easier to run.
 
 Changelog:
 
+v1.0.3
+Added space detection in team name regex
+
 v1.0.2
 Changed competitor chat name, added test print
 
