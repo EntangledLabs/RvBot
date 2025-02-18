@@ -6,6 +6,9 @@ An RvB bot with utilities to make RvB's easier to run.
 
 Changelog:
 
+v1.2.0
+Added add_team command
+
 v1.1.1
 Changed team chat categories to include team number
 

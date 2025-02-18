@@ -227,7 +227,10 @@ async def create_teams(ctx):
                 discord.utils.get(guild.roles, name=config['roles']['gt_role']): discord.PermissionOverwrite(read_messages=True)
             }
 
-            team_cat = await guild.create_category(name=f'{config['competition']['name']} {index} - {team_name}', overwrites=team_overwrites)
+            team_cat = await guild.create_category(
+                name=f'Team {index} - {team_name}' if type(team_name) is not int else f'Team {team_name}',
+               overwrites=team_overwrites
+            )
             await team_cat.create_text_channel(name=f'{team_name}-chat', overwrites=team_overwrites)
             await team_cat.create_voice_channel(name=f'{team_name}-voice', overwrites=team_overwrites)
 
@@ -275,6 +278,45 @@ async def delete_teams(ctx):
     embed.title = 'Teams deletion'
     embed.description = 'All team channels and roles have been deleted.'
     await ctx.send(embed=embed)
+
+@bot.command(pass_context=True)
+@commands.check_any(commands.has_any_role(*admin_allowed),
+                    commands.has_guild_permissions(administrator=True))
+async def add_team(ctx, teamname):
+    """Adds a team with specified name, along with role and cat"""
+    guild = discord.utils.get(bot.guilds, id=guild_id)
+    team_cats = [cat for cat in guild.categories if competitor_cat_re.match(cat.name)]
+    last_index = 1
+
+    for cat in team_cats:
+        name = cat.name.split(' ')
+        index = int(name[1])
+
+        if index > last_index:
+            last_index = index
+
+    team_role = await guild.create_role(name=f'Team {teamname}' if teamname is not None else f'Team {last_index}')
+    team_overwrites = {
+        guild.default_role: discord.PermissionOverwrite(read_messages=False),
+        guild.me: discord.PermissionOverwrite(read_messages=True),
+        team_role: discord.PermissionOverwrite(read_messages=True),
+        discord.utils.get(guild.roles, name=config['roles']['gt_role']): discord.PermissionOverwrite(read_messages=True)
+    }
+
+    team_cat = await guild.create_category(
+        name=f'Team {last_index} - {teamname}' if teamname is not None else f'Team {last_index}',
+        overwrites=team_overwrites
+    )
+
+    await team_cat.create_text_channel(
+        name=f'{teamname}-chat' if teamname is not None else f'{last_index}-chat',
+        overwrites=team_overwrites
+    )
+    await team_cat.create_voice_channel(
+        name=f'{teamname}-voice' if teamname is not None else f'{last_index}-voice',
+        overwrites=team_overwrites
+    )
+
 
 # ++++==== GT Helpers ====++++
 @bot.command(pass_context=True)
