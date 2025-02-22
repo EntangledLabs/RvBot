@@ -317,6 +317,32 @@ async def add_team(ctx, teamname):
         overwrites=team_overwrites
     )
 
+    embed = discord.Embed()
+    embed.title = 'Team Creation Wizard'
+    embed.description = f'Team {teamname} successfully created!'
+
+@bot.command(pass_context=True)
+@commands.check_any(commands.has_any_role(*admin_allowed),
+                    commands.has_guild_permissions(administrator=True))
+async def add_teammate(ctx, teamname, user_tag):
+    """Adds a user with tag user_tag to team with name teamname"""
+    guild = discord.utils.get(bot.guilds, id=guild_id)
+
+    embed = discord.Embed()
+    embed.title = 'Teammate Addition Wizard'
+    try:
+        team_role = guild.get_role(f'Team {teamname}')
+
+        member = discord.utils.get(guild.members, name=user_tag)
+
+        await member.add_roles(team_role)
+
+    except:
+        embed.description = 'Team name or user not found!'
+        await ctx.send(embed=embed)
+
+    embed.description = f'User \'{user_tag}\' successfully added to team \'{teamname}\'!'
+    await ctx.send(embed=embed)
 
 # ++++==== GT Helpers ====++++
 @bot.command(pass_context=True)
