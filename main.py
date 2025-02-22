@@ -276,9 +276,6 @@ async def delete_teams(ctx):
                 await channel.delete()
             await category.delete()
 
-    comp_role = discord.utils.get(guild.roles, name=config['roles']['competitor_role'])
-    await comp_role.delete()
-
     embed = discord.Embed()
     embed.title = 'Teams deletion'
     embed.description = 'All team channels and roles have been deleted.'
