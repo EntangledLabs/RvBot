@@ -276,6 +276,9 @@ async def delete_teams(ctx):
                 await channel.delete()
             await category.delete()
 
+    comp_role = discord.utils.get(guild.roles, name=config['roles']['competitor_role'])
+    await comp_role.delete()
+
     embed = discord.Embed()
     embed.title = 'Teams deletion'
     embed.description = 'All team channels and roles have been deleted.'
@@ -330,14 +333,17 @@ async def add_teammate(ctx, teamname, user_tag):
     """Adds a user with tag user_tag to team with name teamname"""
     guild = discord.utils.get(bot.guilds, id=guild_id)
 
+
     embed = discord.Embed()
     embed.title = 'Teammate Addition Wizard'
     try:
         team_role = guild.get_role(f'Team {teamname}')
+        comp_role = discord.utils.get(guild.roles, name=config['roles']['competitor_role'])
 
         member = discord.utils.get(guild.members, name=user_tag)
 
         await member.add_roles(team_role)
+        await member.add_roles(comp_role)
 
     except:
         embed.description = 'Team name or user not found!'
