@@ -297,6 +297,8 @@ async def add_team(ctx, teamname):
         if index > last_index:
             last_index = index
 
+    last_index = last_index + 1
+
     team_role = await guild.create_role(name=f'Team {teamname}' if teamname is not None else f'Team {last_index}')
     team_overwrites = {
         guild.default_role: discord.PermissionOverwrite(read_messages=False),
@@ -322,6 +324,7 @@ async def add_team(ctx, teamname):
     embed = discord.Embed()
     embed.title = 'Team Creation Wizard'
     embed.description = f'Team {teamname} successfully created!'
+    await ctx.send(embed=embed)
 
 @bot.command(pass_context=True)
 @commands.check_any(commands.has_any_role(*admin_allowed),
