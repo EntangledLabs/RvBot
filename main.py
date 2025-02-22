@@ -106,7 +106,8 @@ async def init(ctx: commands.Context):
         guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True),
         gt_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
         rt_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
-        dir_role: discord.PermissionOverwrite(read_messages=True, send_messages=True)
+        dir_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
+        comp_role: discord.PermissionOverwrite(read_messages=True, send_messages=False)
     }
 
     # Creating competition category
