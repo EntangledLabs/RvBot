@@ -375,7 +375,7 @@ async def send_creds(ctx):
                     break
             team_general = team_cat.text_channels[0]
 
-            embed.description = f'Your credentials are: {row.pop(0)}:{row.pop(0)}'
+            embed.description = f'Your credentials are:\n{row.pop(0)}:{row.pop(0)}'
             await team_general.send(embed=embed)
 
     embed.description = 'All creds sent'
@@ -396,7 +396,7 @@ async def send_message(ctx, title, message):
     for category in guild.categories:
         if competitor_cat_re.match(category.name) or competitor_cat_re.match(category.name):
             channel = category.text_channels[0]
-            await channel.send(embed=embed, file=ctx.message.attachments[0].to_file())
+            await channel.send(embed=embed)
 
     embed.description = 'Message sent to all teams'
     await ctx.send(embed=embed)
