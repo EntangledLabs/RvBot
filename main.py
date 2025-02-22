@@ -333,11 +333,10 @@ async def add_teammate(ctx, teamname, user_tag):
     """Adds a user with tag user_tag to team with name teamname"""
     guild = discord.utils.get(bot.guilds, id=guild_id)
 
-
     embed = discord.Embed()
     embed.title = 'Teammate Addition Wizard'
     try:
-        team_role = guild.get_role(f'Team {teamname}')
+        team_role = discord.utils.get(guild.roles, name=f'Team {teamname}')
         comp_role = discord.utils.get(guild.roles, name=config['roles']['competitor_role'])
 
         member = discord.utils.get(guild.members, name=user_tag)
@@ -348,6 +347,7 @@ async def add_teammate(ctx, teamname, user_tag):
     except:
         embed.description = 'Team name or user not found!'
         await ctx.send(embed=embed)
+        return
 
     embed.description = f'User \'{user_tag}\' successfully added to team \'{teamname}\'!'
     await ctx.send(embed=embed)
@@ -368,12 +368,12 @@ async def send_creds(ctx):
 
         for row in csvreader:
             team_name = row.pop(0)
-            team_role = await discord.utils.get(guild.roles, name=f'Team {team_name}')
-            team_cat = await discord.utils.get(guild.categories, name=f'{config['competition']['name']} {team_name}')
-            team_general = await discord.utils.get(team_cat.text_channels, name='competitor-chat')
+            team_role = discord.utils.get(guild.roles, name=f'Team {team_name}')
+            team_cat = discord.utils.get(guild.categories, name=f'{config['competition']['name']} {team_name}')
+            team_general = discord.utils.get(team_cat.text_channels, name='competitor-chat')
 
             embed.description = f'Your credentials are: {row.pop(0)}:{row.pop(0)}'
-            team_general.send(embed=embed)
+            await team_general.send(embed=embed)
 
 @bot.command(pass_context=True)
 @commands.check_any(commands.has_any_role(*[*gt_allowed, *admin_allowed]),
