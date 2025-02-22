@@ -368,12 +368,18 @@ async def send_creds(ctx):
 
         for row in csvreader:
             team_name = row.pop(0)
-            team_role = discord.utils.get(guild.roles, name=f'Team {team_name}')
-            team_cat = discord.utils.get(guild.categories, name=f'{config['competition']['name']} {team_name}')
-            team_general = discord.utils.get(team_cat.text_channels, name='competitor-chat')
+
+            for category in guild.categories:
+                if category.name.find(team_name) != -1:
+                    team_cat = category
+                    break
+            team_general = team_cat.text_channels[0]
 
             embed.description = f'Your credentials are: {row.pop(0)}:{row.pop(0)}'
             await team_general.send(embed=embed)
+
+    embed.description = 'All creds sent'
+    await ctx.send(embed=embed)
 
 @bot.command(pass_context=True)
 @commands.check_any(commands.has_any_role(*[*gt_allowed, *admin_allowed]),
@@ -391,6 +397,9 @@ async def send_message(ctx, title, message):
         if competitor_cat_re.match(category.name) or competitor_cat_re.match(category.name):
             channel = category.text_channels[0]
             await channel.send(embed=embed, file=ctx.message.attachments[0].to_file())
+
+    embed.description = 'Message sent to all teams'
+    await ctx.send(embed=embed)
 
 # ++++==== GT Support ====++++
 @bot.command(pass_context=True)
