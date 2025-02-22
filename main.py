@@ -25,7 +25,8 @@ gt_allowed = [config['roles']['gt_role'], config['roles']['dir_role']]
 admin_allowed = ['Admin', config['roles']['dir_role']]
 
 competitor_role_re = re.compile(r'^Team\s[a-zA-Z0-9]+$')
-competitor_cat_re = re.compile(fr'^{config['competition']['name']}\s[a-zA-Z0-9\s]+$')
+competitor_cat_re = re.compile(r'^Team\s[0-9]+\s-\s[a-zA-Z0-9\s]+$')
+competitor_numerical_cat_re = re.compile(r'^Team\s[0-9]+$')
 
 bot = commands.Bot(
     command_prefix='!rvbot ',
@@ -270,7 +271,7 @@ async def delete_teams(ctx):
             await role.delete()
 
     for category in guild.categories:
-        if competitor_cat_re.match(category.name):
+        if competitor_cat_re.match(category.name) or competitor_cat_re.match(category.name):
             for channel in category.channels:
                 await channel.delete()
             await category.delete()
@@ -286,7 +287,7 @@ async def delete_teams(ctx):
 async def add_team(ctx, teamname):
     """Adds a team with specified name, along with role and cat"""
     guild = discord.utils.get(bot.guilds, id=guild_id)
-    team_cats = [cat for cat in guild.categories if competitor_cat_re.match(cat.name)]
+    team_cats = [cat for cat in guild.categories if competitor_cat_re.match(cat.name) or competitor_cat_re.match(cat.name)]
     last_index = 1
 
     for cat in team_cats:
@@ -381,7 +382,7 @@ async def send_message(ctx, title, message):
     embed.description = message
 
     for category in guild.categories:
-        if competitor_cat_re.match(category.name):
+        if competitor_cat_re.match(category.name) or competitor_cat_re.match(category.name):
             channel = category.text_channels[0]
             await channel.send(embed=embed, file=ctx.message.attachments[0].to_file())
 
